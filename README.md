@@ -22,7 +22,7 @@
 <br/>
 </div>
 
-O **DsCode** é um assistente de programação que roda no terminal. Você conversa com **44 modelos entre DeepSeek V4, OpenAI GPT, Anthropic Claude, Google Gemini, Z.AI GLM, Meta Muse Spark e modelos locais (Ollama/vLLM)** — e ele analisa, sugere, revisa e escreve código no seu projeto.
+O **DsCode** é um assistente de programação que roda no terminal. Você conversa com **44 modelos entre DeepSeek V4/V4.1, OpenAI GPT, Anthropic Claude, Google Gemini, Z.AI GLM, Meta Muse Spark e modelos locais (Ollama/vLLM)** — e ele analisa, sugere, revisa e escreve código no seu projeto.
 
 A diferença: o DsCode é o **único** assistente com um pipeline completo de desenvolvimento orientado a especificações (SDD). Ele não só escreve código — ele **planeja** o que construir, **verifica** a qualidade, **implementa** as tarefas e **audita** o resultado. Cada etapa roda isolada, com um único recibo verificável (handoff) entre elas — e a IA nunca decide sozinha se uma etapa passou: isso é verificação determinística, não opinião do modelo. Funciona com **qualquer stack** (TypeScript, .NET, Python e mais) porque a validação atravessa o mesmo caminho confiável independente da linguagem.
 
@@ -33,19 +33,15 @@ A diferença: o DsCode é o **único** assistente com um pipeline completo de de
 ```mermaid
 flowchart LR
     P["/spec-plan<br/>Planeja"] --> N["/spec-new<br/>Cria specs"]
-    N --> V["/spec-review<br/>Verifica 🔄"]
-    V -->|"Auto-corrige"| V
-    V --> I["/spec-implement<br/>Implementa"]
-    I --> A["/spec-audit<br/>Audita 🔄"]
-    A -->|"Auto-corrige"| A
-    A --> T["/spec-test<br/>Testa"]
+    N --> I["/spec-implement<br/>Implementa"]
+    I --> T["/spec-test<br/>Certifica 🔄"]
     T --> D[✅ Feature pronta]
 ```
 
 | Capacidade | O que faz | Por que nenhum outro tem |
 |---|---|---|
-| **Pipeline SDD** | Ciclo completo: planejar → criar → verificar → implementar → auditar → testar | Auto-correção em 2 checkpoints + gates determinísticos (máx. 6, 1 por etapa) — a IA redige, o código verifica |
-| **Multi-provedor** | DeepSeek V4, OpenAI GPT, Anthropic Claude, Google Gemini, Z.AI GLM, Muse Spark, Ollama/vLLM local | Troque de provedor sem alterar uma linha de configuração; chaves por projeto, migração automática |
+| **Pipeline SDD** | Ciclo completo: planejar → criar → implementar → certificar | Autonomia NONSTOP com gates determinísticos — a IA redige, o código decide — e correção na etapa dona do defeito |
+| **Multi-provedor** | DeepSeek V4/V4.1, OpenAI GPT, Anthropic Claude, Google Gemini, Z.AI GLM, Muse Spark, Ollama/vLLM local | Troque de provedor sem alterar uma linha de configuração; chaves por projeto, migração automática |
 | **Stack-agnostic** | TypeScript, .NET, Python e mais pelo mesmo caminho de validação | O gate não julga sua linguagem — valida o documento e roda seus testes |
 | **Skills como agentes** | Subagentes isolados com modelo, tools e thinking próprios | Cada skill roda em sandbox — não polui o contexto principal |
 | **MCP nativo** | Conecte bancos, navegadores e APIs externas | Integrado nas 3 camadas: skills, specs e TUI |
@@ -141,7 +137,7 @@ Digite `/` no prompt para ver o menu completo. Aqui estão os que você mais vai
 | `/model-add` | Cadastrar modelo pelo wizard unificado (testa antes de salvar) |
 | `/quickstart` | Tour interativo de 5 minutos pelo pipeline SDD |
 | `/spec-plan` | Planejar novas funcionalidades com specs |
-| `/spec-pipe <n>` | Pipeline completo: new → review → implement → audit → test |
+| `/spec-pipe <n>` | Pipeline completo: new → implement → test |
 | [`/spec-test`](docs/spec-test.md) | Executar testes canônicos do projeto para Node/TypeScript, Go, Java e Rust |
 | `/init` | Criar `AGENTS.md` com instruções para a IA |
 | `/steering-add` | Adicionar regra que a IA segue em todas as sessões |
@@ -172,7 +168,7 @@ Skills podem rodar como **agentes autônomos** (`mode: agent`) — cada um com s
 name: reviewer
 description: Revisa código em busca de bugs
 mode: agent
-model: deepseek-v4-flash
+model: deepseek-flash
 tools: [Read, Grep, Glob, Bash]
 ```
 

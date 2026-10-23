@@ -33,17 +33,14 @@ The difference: DsCode is the **only** assistant with a complete Spec-Driven Dev
 ```mermaid
 flowchart LR
     P["/spec-plan<br/>Plans"] --> N["/spec-new<br/>Creates specs"]
-    N --> V["/spec-verify<br/>Verifies 🔄"]
-    V -->|"Auto-corrects"| V
-    V --> I["/spec-implement<br/>Implements"]
-    I --> A["/spec-audit<br/>Audits 🔄"]
-    A -->|"Auto-corrects"| A
-    A --> D[✅ Feature ready]
+    N --> I["/spec-implement<br/>Implements"]
+    I --> T["/spec-test<br/>Certifies 🔄"]
+    T --> D[✅ Feature ready]
 ```
 
 | Capability | What it does | Why no other tool has it |
 |---|---|---|
-| **SDD Pipeline** | Full cycle: plan → create → verify → implement → audit | Auto-correction at 2 checkpoints — verify and audit fix issues on their own |
+| **SDD Pipeline** | Full cycle: plan → create → implement → certify | NONSTOP autonomy with deterministic gates — the LLM drafts, the code decides |
 | **Multi-provider** | DeepSeek V4, OpenAI GPT-5.x, Anthropic Claude, Google Gemini | Switch providers without changing a single line of configuration |
 | **Skills as agents** | Isolated subagents with their own model, tools, and thinking | Each skill runs sandboxed — never pollutes the main context |
 | **Native MCP** | Connect databases, browsers, and external APIs | Integrated across all 3 layers: skills, specs, and TUI |
@@ -136,7 +133,7 @@ Type `/` in the prompt to see the full menu. Here are the ones you'll use most:
 | `/model` | Switch between 16 models across 4 providers |
 | `/quickstart` | 5-minute interactive SDD pipeline tour |
 | `/spec-plan` | Plan new features with specs |
-| `/spec-pipe <n>` | Full pipeline: new → verify → implement → audit → test |
+| `/spec-pipe <n>` | Full pipeline: new → implement → test |
 | [`/spec-test`](../spec-test_en.md) | Run the project's canonical tests for Node/TypeScript, Go, Java, and Rust |
 | `/init` | Create `AGENTS.md` with instructions for the AI |
 | `/steering-add` | Add a rule the AI follows in every session |
@@ -165,7 +162,7 @@ Skills can run as **autonomous agents** (`mode: agent`) — each with its own mo
 name: reviewer
 description: Reviews code for bugs and improvements
 mode: agent
-model: deepseek-v4-flash
+model: deepseek-flash
 tools: [Read, Grep, Glob, Bash]
 ```
 

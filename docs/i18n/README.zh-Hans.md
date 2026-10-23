@@ -165,7 +165,7 @@ dscode
 name: reviewer
 description: 审查代码中的错误和改进点
 mode: agent
-model: deepseek-v4-flash
+model: deepseek-flash
 tools: [Read, Grep, Glob, Bash]
 ```
 

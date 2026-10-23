@@ -165,7 +165,7 @@ Las skills pueden ejecutarse como **agentes autónomos** (`mode: agent`) — cad
 name: reviewer
 description: Revisa código en busca de bugs y mejoras
 mode: agent
-model: deepseek-v4-flash
+model: deepseek-flash
 tools: [Read, Grep, Glob, Bash]
 ```
 
