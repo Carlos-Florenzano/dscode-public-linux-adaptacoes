@@ -17,30 +17,36 @@
 [![][github-license-shield]][github-license-link]
 [![][github-stars-shield]][github-stars-link]
 
-**O assistente de IA que planeja, implementa, verifica e audita código automaticamente — com zero vendor lock-in.**
+**Assistente de programação no terminal, com suporte a múltiplos modelos e ferramentas de desenvolvimento orientado a especificações.**
 
 <br/>
 </div>
 
-O **DsCode** é um assistente de programação que roda no terminal. Você conversa com **44 modelos entre DeepSeek V4/V4.1, OpenAI GPT, Anthropic Claude, Google Gemini, Z.AI GLM, Meta Muse Spark e modelos locais (Ollama/vLLM)** — e ele analisa, sugere, revisa e escreve código no seu projeto.
+O **DsCode** é um assistente de programação que roda no terminal. Ele integra modelos de diferentes provedores — como DeepSeek, OpenAI, Anthropic, Gemini, GLM, Muse Spark e modelos locais — para analisar, revisar e escrever código no projeto. Os modelos disponíveis dependem da configuração e da versão instalada.
 
-A diferença: o DsCode é o **único** assistente com um pipeline completo de desenvolvimento orientado a especificações (SDD). Ele não só escreve código — ele **planeja** o que construir, **verifica** a qualidade, **implementa** as tarefas e **audita** o resultado. Cada etapa roda isolada, com um único recibo verificável (handoff) entre elas — e a IA nunca decide sozinha se uma etapa passou: isso é verificação determinística, não opinião do modelo. Funciona com **qualquer stack** (TypeScript, .NET, Python e mais) porque a validação atravessa o mesmo caminho confiável independente da linguagem.
+O DsCode oferece ferramentas de planejamento orientado a especificações (SDD), implementação, validação e auditoria. A arquitetura SDD v21 integra essas capacidades em **um ciclo único de engenharia**, no qual erros de compilação e testes retornam ao mesmo executor até a correção, dentro de limites seguros. A certificação permanece determinística e depende de evidências reais; o agente não aprova suas próprias alterações. O motor v21 está ativo; a homologação de ponta a ponta em um `/spec-pipe` real segue pendente.
 
 ---
 
-## O que torna o DsCode único
+## Principais capacidades
 
 ```mermaid
 flowchart LR
-    P["/spec-plan<br/>Planeja"] --> N["/spec-new<br/>Cria specs"]
-    N --> I["/spec-implement<br/>Implementa"]
-    I --> T["/spec-test<br/>Certifica 🔄"]
-    T --> D[✅ Feature pronta]
+    P["/spec-plan<br/>Planeja"] --> N["/spec-new<br/>Especifica"]
+    N --> I["/spec-implement<br/>Implementa, valida e corrige"]
+    I --> T["/spec-test<br/>Certifica"]
+    T -- "Falha reparável" --> I
+    T -- "Provas suficientes" --> D["Audited"]
 ```
+
+> **Estado de implantação:** o ciclo com retorno automático do `spec-test` à implementação está implementado e coberto por testes determinísticos. A homologação de ponta a ponta em um `/spec-pipe` real permanece pendente; até lá, a execução pode terminar com trabalho parcial preservado e certificação pendente. Consulte [o contrato v21](sdd-contrato/sdd-fluxo.md). Não confunda código escrito com spec certificada.
+
+**Política de qualidade prevista:** continuar implementação e correção quando houver trabalho seguro; pausar quando recursos ou segurança exigirem; declarar `audited` apenas com aceitação verificada. Falhas reais não são ocultadas.
+
 
 | Capacidade | O que faz | Por que nenhum outro tem |
 |---|---|---|
-| **Pipeline SDD** | Ciclo completo: planejar → criar → implementar → certificar | Autonomia NONSTOP com gates determinísticos — a IA redige, o código decide — e correção na etapa dona do defeito |
+| **Pipeline SDD** | Planejar → especificar → implementar → testar | v21: um ciclo de implementação e correção com certificação baseada em provas |
 | **Multi-provedor** | DeepSeek V4/V4.1, OpenAI GPT, Anthropic Claude, Google Gemini, Z.AI GLM, Muse Spark, Ollama/vLLM local | Troque de provedor sem alterar uma linha de configuração; chaves por projeto, migração automática |
 | **Stack-agnostic** | TypeScript, .NET, Python e mais pelo mesmo caminho de validação | O gate não julga sua linguagem — valida o documento e roda seus testes |
 | **Skills como agentes** | Subagentes isolados com modelo, tools e thinking próprios | Cada skill roda em sandbox — não polui o contexto principal |
@@ -49,23 +55,15 @@ flowchart LR
 
 ---
 
-## Comparação rápida
+## Estado da reforma SDD
 
-|  | DsCode | GitHub Copilot | Cursor | Claude Code | Amazon Kiro |
-|---|---|---|---|---|---|
-| **Roda no terminal** | ✅ TUI nativa | ❌ Só IDE | ❌ Só IDE | ✅ CLI | ⚠️ IDE + CLI |
-| **Multi-provedor** | ✅ 4 provedores | ❌ Só GitHub | ⚠️ Limitado | ❌ Só Anthropic | ❌ Só Bedrock |
-| **Pipeline SDD** | ✅ Completo + auto-correção | ❌ | ❌ | ❌ | ✅ IDE-based |
-| **Skills/Agentes** | ✅ Subagentes isolados | ❌ | ⚠️ Rules | ⚠️ Hooks | ✅ Powers |
-| **Grátis** | ✅ Sem custo | ⚠️ Limitado | ⚠️ Limitado | ⚠️ Créditos | ❌ Custo Bedrock |
-
-> O **Amazon Kiro** é o concorrente mais próximo — ambos têm SDD, Steering e Skills. A diferença: o DsCode é **terminal-nativo, multi-provedor e gratuito**; o Kiro é **preso ao Amazon Bedrock e cobra pelo uso dos modelos**.
+Descrição e estado: a v21 substitui a lógica de etapas rígidas por um ciclo único capaz de detectar erros reais, transmitir diagnósticos completos (stdout e stderr) e corrigir o software dentro da mesma execução. O motor v21 está ativo e homologado nos gates determinísticos (`check`, `build` e suíte afetada) e em cenários de ponta a ponta isolados — inclusive quando `spec-test` reprova depois de todas as tarefas originais estarem concluídas: o mesmo executor recebe uma unidade de correção, corrige e a certificação é reexecutada com gates reais. Specs reais não foram reexecutadas nem mutadas. Contrato v20 parseável continua suportado; o contrato v21 ativo é declarado em modo `v21-guidance`.
 
 ---
 
 ## Instale em 30 segundos
 
-Baixe o binário na **[página de releases](https://github.com/andrelncampos/dscode-public/releases)**. Requer **[Node.js 24+](https://nodejs.org)**.
+Baixe o binário na **[página de releases](https://github.com/andrelncampos/dscode-public/releases)**. O `package.json` do snapshot examinado declara **[Node.js 24+](https://nodejs.org)**. A homologação-alvo da reforma é **Node.js 26**, mas a alteração do requisito mínimo depende de decisão e validação separadas.
 
 | Sistema | Arquivo |
 |---|---|
@@ -81,20 +79,28 @@ Extraia e execute `./dscode`. O DsCode verifica atualizações automaticamente a
 
 ### 1. Configure sua chave
 
-Crie `~/.dscode/settings.json` com sua chave de API:
+Rode `dscode` dentro do projeto e use `/model-add`. O wizard testa o modelo e grava a credencial **cifrada** em `.dscode/settings.json` — nunca em texto puro.
+
+O arquivo é sempre do projeto; não existe camada global:
 
 ```json
 {
-  "env": {
-    "MODEL": "deepseek-v4-pro",
-    "BASE_URL": "https://api.deepseek.com",
-    "API_KEY": "sua-chave-aqui"
-  },
-  "thinkingEnabled": true
+  "model": "deepseek-flash",
+  "modelInstance": "minha-instancia",
+  "modelInstances": {
+    "minha-instancia": {
+      "name": "minha-instancia",
+      "modelId": "deepseek-flash",
+      "provider": "deepseek",
+      "apiKey": "aes256:...",
+      "apiKeyEncrypted": true,
+      "priority": 1
+    }
+  }
 }
 ```
 
-Sem modelo configurado, o DsCode abre normalmente e mostra um aviso persistente guiando para `/model-add`.
+Sem modelo configurado, o DsCode abre normalmente e mostra um aviso persistente guiando para `/model-add`. Chaves ausentes usam o default.
 
 ### 2. Abra seu projeto e inicie
 
@@ -105,9 +111,36 @@ dscode
 
 ### 3. Faça o tour interativo
 
-Digite `/quickstart` para um tour de 5 minutos. A IA demonstra o pipeline SDD completo criando um projeto de exemplo — você aprende vendo rodar, não lendo documentação.
+Digite `/quickstart` para um tour de 5 minutos. O tour apresenta os comandos e um projeto de exemplo. A conclusão automática das specs depende do comportamento da versão instalada.
 
 Ou execute `dscode --quickstart` para pular direto para o tour.
+
+---
+
+## Configuração
+
+O `settings.json` é **esparso**: só o que você declarar existe; todo o resto usa o default. Ele fica em `.dscode/settings.json`, é ignorado pelo Git e não pode ser alterado por um turno da IA.
+
+| Chave | Para que serve | Exemplo |
+|---|---|---|
+| `model` / `modelInstance` | Modelo ativo e instância fixada | `"deepseek-flash"` |
+| `modelInstances` | Credenciais cifradas, provider e prioridade de failover | veja acima |
+| `maxTokens` | Teto de tokens de saída | `128000` |
+| `reasoningEffort` | Profundidade de raciocínio | `"max"` |
+| `permissions` | `allow` / `deny` / `ask` / `defaultMode` por escopo | `{"deny":["mutate-git-log"]}` |
+| `trust.tools` | Aprovação persistente de uma ferramenta | `{"bash":{"approved":true}}` |
+| `trustedReadRoots` | Diretórios externos somente leitura | `["/srv/docs"]` |
+| `mcpServers` | Servidores MCP | veja [docs/mcp.md](docs/mcp.md) |
+| `memory` | Retenção e limites do histórico | `{"recentTurns":10}` |
+| `budget` | Alerta de custo diário/mensal (não bloqueia) | `{"dailyLimit":5}` |
+| `sdd.profile` | Perfil de roteamento do SDD | `"economic"` |
+| `sdd.validationExecution` | Autoriza validação no host | `{"allowTrustedLocalExecution":true}` |
+| `sdd.autonomousCorrection` | Correção autônoma no `/spec-pipe` | `true` |
+| `cacheMode` | Consciência de cache de prefixo | `"strict"` |
+| `terminalTitleTemplate` | Título do terminal | `"{{cwd}}"` |
+| `locale` | Idioma da interface | `"pt"` |
+
+**Referência completa:** [docs/configuration.md](docs/configuration.md) — tipo, default e efeito das 77 chaves, os sub-schemas (`modelInstances`, `modelPricing`, `mcpServers`, `engineEscalation`, `sdd.validationExecution`), precedência e receitas. As chaves menos usadas no dia a dia (flags `openai*`, governança SDD, custo, memória detalhada, MCP) ficam lá, não aqui.
 
 ---
 
